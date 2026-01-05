@@ -12,33 +12,26 @@ import { Search, Camera, CheckCircle, XCircle, Loader2, HelpCircle } from "lucid
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n/context"
 
+import { normalizeVin, normalizePlate, normalizeState, formatVinDisplay } from "@/lib/input-safety"
+import Link from "next/link"
+
 interface VinInputProps {
   className?: string
   onModeChange?: (mode: "vin" | "plate") => void
 }
 
-// VIN validation: 17 chars, alphanumeric excluding I, O, Q
-const VALID_VIN_CHARS = /^[A-HJ-NPR-Z0-9]+$/i
-const VIN_LENGTH = 17
 
-function formatVinDisplay(vin: string): string {
-  const clean = vin.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, "")
-  if (clean.length <= 4) return clean
-  if (clean.length <= 8) return `${clean.slice(0, 4)}-${clean.slice(4)}`
-  if (clean.length <= 12) return `${clean.slice(0, 4)}-${clean.slice(4, 8)}-${clean.slice(8)}`
-  return `${clean.slice(0, 4)}-${clean.slice(4, 8)}-${clean.slice(8, 12)}-${clean.slice(12, 17)}`
-}
-
-function cleanVin(vin: string): string {
-  return vin.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, "")
-}
 
 export function VinInput({ className, onModeChange }: VinInputProps) {
   const router = useRouter()
   const { t } = useI18n()
   const [vin, setVin] = useState("")
+  const [vinError, setVinError] = useState<string | undefined>(undefined)
   const [plate, setPlate] = useState("")
+  const [plateError, setPlateError] = useState<string | undefined>(undefined)
   const [plateState, setPlateState] = useState("")
+  const [stateError, setStateError] = useState<string | undefined>(undefined)
+
   const [isLoading, setIsLoading] = useState(false)
   const [isPlateLoading, setIsPlateLoading] = useState(false)
   const [scannerOpen, setScannerOpen] = useState(false)
@@ -46,9 +39,10 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
   const [currentMode, setCurrentMode] = useState<"vin" | "plate">("vin")
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const cleanedVin = cleanVin(vin)
-  const isValidVin = cleanedVin.length === VIN_LENGTH && VALID_VIN_CHARS.test(cleanedVin)
-  const showValidation = vin.length > 0
+  // Real-time validation status for UI feedback
+  const vinValidation = normalizeVin(vin)
+  const isVinValid = vinValidation.isValid
+  const showVinValidation = vin.length > 0
 
   useEffect(() => {
     onModeChange?.(currentMode)
@@ -59,26 +53,68 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
   }, [])
 
   const handleVinChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const cleaned = cleanVin(value)
-    if (cleaned.length <= VIN_LENGTH) {
-      setVin(cleaned)
-    }
+    const raw = e.target.value
+    // Just update the raw value for typing feel, but specific cleaning checks validation
+    // Use the formatter to keep the display clean
+    const formatted = formatVinDisplay(raw)
+    setVin(raw.toUpperCase()) // Store uppercase roughly but validate strictly
+
+    // Only clear error on change, let submit handle validation triggers to avoid aggressive feedback
+    if (vinError) setVinError(undefined)
+  }, [vinError])
+
+  const handlePlateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    setPlate(raw.toUpperCase())
+    const check = normalizePlate(raw)
+    setPlateError(check.isValid ? undefined : check.reason)
+  }, [])
+
+  const handleStateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    setPlateState(raw.toUpperCase().slice(0, 2))
+    const check = normalizeState(raw)
+    setStateError(check.isValid ? undefined : check.reason)
   }, [])
 
   const handleSubmit = useCallback(async () => {
+    if (isLoading) return // Prevent double submit
+
+    const validation = normalizeVin(vin)
+    if (!validation.isValid) {
+      setVinError(validation.reason || "Invalid VIN")
+      return
+    }
+
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    const targetVin = isValidVin ? cleanedVin : "1HGBH41JXMN109186"
-    router.push(`/report/${targetVin}`)
-  }, [isValidVin, cleanedVin, router])
+    // 2-3s UI cooldown
+    await new Promise((resolve) => setTimeout(resolve, 2500))
+
+    router.push(`/report/${validation.value}`)
+  }, [vin, isLoading, router])
 
   const handlePlateSubmit = useCallback(async () => {
+    if (isPlateLoading) return // Prevent double submit
+
+    const pVal = normalizePlate(plate)
+    const sVal = normalizeState(plateState)
+
+    if (!pVal.isValid) {
+      setPlateError(pVal.reason)
+      return
+    }
+    if (!sVal.isValid) {
+      setStateError(sVal.reason)
+      return
+    }
+
     setIsPlateLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // 2-3s UI cooldown
+    await new Promise((resolve) => setTimeout(resolve, 2500))
+
     // For demo, navigate to sample report
     router.push(`/report/1HGBH41JXMN109186`)
-  }, [router])
+  }, [plate, plateState, isPlateLoading, router])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -128,18 +164,15 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 onKeyDown={handleKeyDown}
                 className={cn(
                   "h-14 pr-24 text-base font-mono tracking-wider rounded-2xl",
-                  showValidation && isValidVin && "border-success focus-visible:ring-success",
-                  showValidation &&
-                  !isValidVin &&
-                  vin.length > 0 &&
-                  "border-destructive focus-visible:ring-destructive",
+                  vinError && "border-destructive focus-visible:ring-destructive",
                 )}
                 aria-label="Vehicle Identification Number"
                 aria-describedby="vin-validation vin-helper"
+                aria-invalid={!!vinError}
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                {showValidation &&
-                  (isValidVin ? (
+                {showVinValidation &&
+                  (isVinValid ? (
                     <CheckCircle className="h-5 w-5 text-success" aria-hidden="true" />
                   ) : (
                     <XCircle className="h-5 w-5 text-destructive" aria-hidden="true" />
@@ -163,10 +196,10 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
             </div>
 
             <div className="h-6" aria-live="polite">
-              {showValidation && !isValidVin && (
+              {(vinError) && (
                 <p id="vin-validation" className="text-sm text-destructive flex items-center gap-1.5">
                   <XCircle className="h-4 w-4" />
-                  {t.vinValidationError} {cleanedVin.length}.
+                  {vinError}
                 </p>
               )}
             </div>
@@ -176,7 +209,7 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t.checking}
+                    Please wait...
                   </>
                 ) : (
                   <>
@@ -190,6 +223,9 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 {t.scanBarcode}
               </Button>
             </div>
+            <p className="text-[10px] text-muted-foreground text-center pt-2">
+              We don’t store your VIN after lookup. <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">Learn more</Link> about our data privacy.
+            </p>
           </TabsContent>
 
           <TabsContent value="plate" className="mt-0 space-y-3">
@@ -198,18 +234,26 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 type="text"
                 placeholder={t.plateNumber}
                 value={plate}
-                onChange={(e) => setPlate(e.target.value.toUpperCase())}
+                onChange={handlePlateChange}
                 onKeyDown={handlePlateKeyDown}
-                className="col-span-2 h-14 text-base font-mono tracking-wider rounded-2xl"
+                className={cn(
+                  "col-span-2 h-14 text-base font-mono tracking-wider rounded-2xl",
+                  plateError && "border-destructive focus-visible:ring-destructive"
+                )}
+                aria-invalid={!!plateError}
               />
               <Input
                 type="text"
                 placeholder={t.state}
                 value={plateState}
-                onChange={(e) => setPlateState(e.target.value.toUpperCase().slice(0, 2))}
+                onChange={handleStateChange}
                 onKeyDown={handlePlateKeyDown}
-                className="h-14 text-base font-mono tracking-wider text-center rounded-2xl"
+                className={cn(
+                  "h-14 text-base font-mono tracking-wider text-center rounded-2xl",
+                  stateError && "border-destructive focus-visible:ring-destructive"
+                )}
                 maxLength={2}
+                aria-invalid={!!stateError}
               />
             </div>
 
@@ -228,7 +272,14 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
               </button>
             </div>
 
-            <div className="h-6" aria-live="polite" />
+            <div className="h-6" aria-live="polite">
+              {(plateError || stateError) && (
+                <p className="text-sm text-destructive flex items-center gap-1.5">
+                  <XCircle className="h-4 w-4" />
+                  {plateError || stateError}
+                </p>
+              )}
+            </div>
 
             <div className="flex gap-3">
               <Button
@@ -240,7 +291,7 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 {isPlateLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t.checking}
+                    Please wait...
                   </>
                 ) : (
                   <>
@@ -254,6 +305,10 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 {t.scanBarcode}
               </Button>
             </div>
+
+            <p className="text-[10px] text-muted-foreground text-center pt-2">
+              We don’t store your plate after lookup. <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">Learn more</Link> about our data privacy.
+            </p>
           </TabsContent>
         </div>
       </Tabs>

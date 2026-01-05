@@ -5,18 +5,15 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useI18n, languages } from "@/lib/i18n/context"
 
-import { useId } from "react"
-
 export function LanguageSelector() {
   const { language, setLanguage } = useI18n()
   const currentLang = languages.find((l) => l.code === language) || languages[0]
-  const id = useId()
 
   const availableLanguages = languages.filter((l) => l.code !== language)
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild id={id}>
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="h-9 gap-1.5 px-2">
           <Globe className="h-4 w-4" />
           <span className="text-sm font-medium uppercase">{currentLang.code}</span>

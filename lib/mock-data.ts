@@ -205,7 +205,7 @@ export interface VehicleReport {
 
 export const mockReport: VehicleReport = {
   vin: "1HGBH41JXMN109186",
-  maskedVin: "XXXXXXXXXXXXX9186",
+  maskedVin: "*************9186",
   year: 2021,
   make: "Honda",
   model: "Accord",
