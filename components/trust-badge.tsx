@@ -1,6 +1,6 @@
 "use client"
 
-import { FileText, Lock, Link2Off } from "lucide-react"
+import { FileText, Lock, EyeOff } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n/context"
 
@@ -15,7 +15,7 @@ export function TrustBadge({ variant = "default", className }: TrustBadgeProps) 
   const badges = [
     { icon: FileText, label: t.extensiveReport },
     { icon: Lock, label: t.secureCheckout },
-    { icon: Link2Off, label: t.privacyProtected },
+    { icon: EyeOff, label: t.privacyProtected },
   ]
 
   if (variant === "compact") {
@@ -36,10 +36,10 @@ export function TrustBadge({ variant = "default", className }: TrustBadgeProps) 
       {badges.map((badge) => (
         <div
           key={badge.label}
-          className="flex items-center gap-2 rounded-2xl border border-border/50 bg-muted/30 px-4 py-2"
+          className="flex items-center gap-2 text-muted-foreground"
         >
           <badge.icon className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium text-foreground/80">{badge.label}</span>
+          <span className="text-sm font-medium">{badge.label}</span>
         </div>
       ))}
     </div>
