@@ -19,7 +19,7 @@ export function HeroSection() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="flex flex-col items-center justify-center">
             <p className="text-sm font-medium uppercase tracking-wider text-primary">{t.proVehicleHistory}</p>
-            <h1 className="mt-2 text-4xl font-extrabold tracking-tight leading-[1.1] sm:text-5xl lg:text-6xl max-w-[18ch] mx-auto [text-wrap:balance] min-h-[2.2em] flex items-center justify-center">
+            <h1 className="mt-2 text-4xl font-extrabold tracking-tight leading-[1.1] sm:text-5xl lg:text-6xl max-w-[18ch] mx-auto [text-wrap:balance] min-h-[2.5em] flex items-center justify-center">
               {mode === "vin" ? t.knowBeforeYouBuy : t.knowBeforeYouBuyPlate}
             </h1>
             <p className="mt-2 text-lg text-foreground/80 text-balance sm:text-xl font-medium">{t.heroSubtitle}</p>
