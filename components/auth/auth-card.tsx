@@ -56,7 +56,7 @@ export function AuthCard({ title, description, children, footer, showLogo = true
                             {description && <CardDescription className="text-xs">{description}</CardDescription>}
                         </CardHeader>
                         <CardContent className="px-4 pb-1.5">{children}</CardContent>
-                        {footer && <div className="px-4 pb-4 pt-2 text-center text-xs text-muted-foreground">{footer}</div>}
+                        {footer && <div className="px-4 pb-2 pt-1 text-center text-xs text-muted-foreground">{footer}</div>}
                     </Card>
                 </div>
             </div>
