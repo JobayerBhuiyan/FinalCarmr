@@ -36,7 +36,21 @@ export function HowItWorksSection() {
             <div key={index} className="relative text-center">
               {/* Step number connector */}
               {index < steps.length - 1 && (
-                <div className="absolute left-1/2 top-8 hidden h-0.5 w-full -translate-y-1/2 bg-border sm:block" />
+                <div className="absolute left-1/2 top-8 hidden h-24 w-[calc(100%+2rem)] -translate-y-1/2 sm:block text-muted-foreground/30 pointer-events-none">
+                  <svg
+                    className="h-full w-full overflow-visible"
+                    fill="none"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M0,50 Q50,75 100,50"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
               )}
 
               <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background">
