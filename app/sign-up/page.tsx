@@ -139,9 +139,9 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pb-0.5">
-          <div className="space-y-1">
-            <Label htmlFor="fullName" className="text-[10px] uppercase text-muted-foreground font-medium">USERNAME</Label>
+        <div className="grid grid-cols-2 gap-3 pb-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="fullName" className="text-xs">User Name</Label>
             <Input
               id="fullName"
               placeholder="John Doe"
@@ -156,18 +156,18 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="email" className="text-[10px] uppercase text-muted-foreground font-medium">EMAIL</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-xs">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="name@example.com"
               autoComplete="username"
               disabled={isPending}
-              className={`h-9 text-sm ${form.formState.errors.email ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              className={`h-10 text-sm ${form.formState.errors.email ? "border-destructive focus-visible:ring-destructive" : ""}`}
               {...form.register("email")}
             />
-            <div className="min-h-[12px] px-0.5">
+            <div className="min-h-[14px] px-0.5">
               {form.formState.errors.email && (
                 <p className="text-[10px] text-destructive leading-tight">{form.formState.errors.email.message}</p>
               )}
@@ -175,14 +175,14 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        <div className="space-y-0.5">
-          <Label htmlFor="password" className="text-[10px] uppercase text-muted-foreground font-medium">PASSWORD</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="text-xs">Password</Label>
           <PasswordInput
             id="password"
             autoComplete="new-password"
             placeholder="••••••••••"
             disabled={isPending}
-            className="h-9 text-sm"
+            className="h-10 text-sm"
             error={!!form.formState.errors.password}
             {...form.register("password")}
           />
@@ -190,25 +190,25 @@ export default function SignUpPage() {
             <PasswordStrength password={passwordValue} />
           </div>
 
-          <div className="min-h-[12px] px-0.5">
+          <div className="min-h-[14px] px-0.5">
             {form.formState.errors.password && !passwordValue && (
               <p className="text-[10px] text-destructive leading-tight">{form.formState.errors.password.message}</p>
             )}
           </div>
         </div>
 
-        <div className="space-y-0.5">
-          <Label htmlFor="confirmPassword" className="text-[10px] uppercase text-muted-foreground font-medium">CONFIRM PASSWORD</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirmPassword" className="text-xs">Confirm Password</Label>
           <PasswordInput
             id="confirmPassword"
             autoComplete="new-password"
             placeholder="••••••••••"
             disabled={isPending}
-            className="h-9 text-sm"
+            className="h-10 text-sm"
             error={!!form.formState.errors.confirmPassword}
             {...form.register("confirmPassword")}
           />
-          <div className="min-h-[12px] px-0.5">
+          <div className="min-h-[14px] px-0.5">
             {form.formState.errors.confirmPassword && (
               <p className="text-[10px] text-destructive leading-tight">{form.formState.errors.confirmPassword.message}</p>
             )}
