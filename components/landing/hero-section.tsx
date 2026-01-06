@@ -15,7 +15,7 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 pt-10 pb-16 sm:px-6 sm:pt-12 sm:pb-24 lg:px-8 lg:pt-14 lg:pb-28">
         <div className="mx-auto max-w-3xl text-center">
           <div className="min-h-[180px] sm:min-h-[200px] lg:min-h-[220px] flex flex-col items-center justify-center">
             <p className="text-sm font-medium uppercase tracking-wider text-primary">{t.proVehicleHistory}</p>
@@ -25,7 +25,7 @@ export function HeroSection() {
             <p className="mt-4 text-lg text-foreground/80 text-balance sm:text-xl font-medium">{t.heroSubtitle}</p>
           </div>
 
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 sm:mt-12 lg:mt-14 flex justify-center">
             <VinInput onModeChange={handleModeChange} />
           </div>
 

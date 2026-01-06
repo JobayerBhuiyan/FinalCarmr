@@ -14,7 +14,7 @@ export function LanguageSelector() {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 gap-1.5 px-2">
+        <Button variant="ghost" size="sm" className="h-9 gap-1.5 px-2" suppressHydrationWarning>
           <Globe className="h-4 w-4" />
           <span className="text-sm font-medium uppercase">{currentLang.code}</span>
         </Button>
