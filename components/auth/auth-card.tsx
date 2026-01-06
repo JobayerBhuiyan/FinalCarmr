@@ -15,10 +15,25 @@ interface AuthCardProps {
 
 export function AuthCard({ title, description, children, footer, showLogo = true, breadcrumb }: AuthCardProps) {
     return (
-        <div className="min-h-[100dvh] bg-background flex flex-col justify-center">
-            {/* Breadcrumb removed to save vertical space */}
+        <div className="min-h-screen bg-background flex flex-col">
+            <div className="w-full max-w-[500px] mx-auto px-4 pt-4 sm:px-0">
+                <nav className="flex items-center text-sm font-medium text-muted-foreground">
+                    <Link
+                        href="/"
+                        className="hover:text-foreground transition-colors"
+                    >
+                        Home
+                    </Link>
+                    {breadcrumb && (
+                        <>
+                            <span className="mx-2">›</span>
+                            <span className="text-foreground">{breadcrumb}</span>
+                        </>
+                    )}
+                </nav>
+            </div>
 
-            <div className="w-full max-w-[500px] mx-auto p-4">
+            <div className="flex-1 flex items-center justify-center p-2">
                 <div className="w-full max-w-[500px] space-y-2">
                     {showLogo && (
                         <div className="flex justify-center">
@@ -36,11 +51,11 @@ export function AuthCard({ title, description, children, footer, showLogo = true
                     )}
 
                     <Card className="border-border/50 shadow-sm">
-                        <CardHeader className="space-y-1 text-center py-3">
-                            <CardTitle className="text-xl">{title}</CardTitle>
-                            {description && <CardDescription>{description}</CardDescription>}
+                        <CardHeader className="space-y-0.5 text-center py-2">
+                            <CardTitle className="text-lg">{title}</CardTitle>
+                            {description && <CardDescription className="text-xs">{description}</CardDescription>}
                         </CardHeader>
-                        <CardContent className="px-5 pb-3">{children}</CardContent>
+                        <CardContent className="px-4 pb-1.5">{children}</CardContent>
                         {footer && <div className="px-4 pb-4 pt-2 text-center text-xs text-muted-foreground">{footer}</div>}
                     </Card>
                 </div>
