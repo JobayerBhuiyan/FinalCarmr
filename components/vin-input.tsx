@@ -223,9 +223,7 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
                 {t.scanBarcode}
               </Button>
             </div>
-            <p className="text-[10px] text-muted-foreground text-center pt-2">
-              We don’t store your VIN after lookup. <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">Learn more</Link> about our data privacy.
-            </p>
+
           </TabsContent>
 
           <TabsContent value="plate" className="mt-0 space-y-3">
@@ -306,9 +304,7 @@ export function VinInput({ className, onModeChange }: VinInputProps) {
               </Button>
             </div>
 
-            <p className="text-[10px] text-muted-foreground text-center pt-2">
-              We don’t store your plate after lookup. <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">Learn more</Link> about our data privacy.
-            </p>
+
           </TabsContent>
         </div>
       </Tabs>
