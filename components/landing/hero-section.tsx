@@ -15,21 +15,21 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 pt-8 pb-12 sm:px-6 sm:pt-12 sm:pb-16 lg:px-8 lg:pt-12 lg:pb-20">
+      <div className="mx-auto max-w-7xl px-4 pt-6 pb-12 sm:px-6 sm:pt-10 sm:pb-16 lg:px-8 lg:pt-12 lg:pb-20">
         <div className="mx-auto max-w-3xl text-center">
           <div className="flex flex-col items-center justify-center">
             <p className="text-sm font-medium uppercase tracking-wider text-primary">{t.proVehicleHistory}</p>
-            <h1 className="mt-3 text-4xl font-extrabold tracking-tight leading-[1.1] sm:text-5xl lg:text-6xl max-w-[18ch] mx-auto [text-wrap:balance] min-h-[2.2em] flex items-center justify-center">
+            <h1 className="mt-2 text-4xl font-extrabold tracking-tight leading-[1.1] sm:text-5xl lg:text-6xl max-w-[18ch] mx-auto [text-wrap:balance] min-h-[2.2em] flex items-center justify-center">
               {mode === "vin" ? t.knowBeforeYouBuy : t.knowBeforeYouBuyPlate}
             </h1>
-            <p className="mt-3 text-lg text-foreground/80 text-balance sm:text-xl font-medium">{t.heroSubtitle}</p>
+            <p className="mt-2 text-lg text-foreground/80 text-balance sm:text-xl font-medium">{t.heroSubtitle}</p>
           </div>
 
-          <div className="mt-8 sm:mt-10 lg:mt-12 flex justify-center">
+          <div className="mt-4 sm:mt-6 lg:mt-8 flex justify-center">
             <VinInput onModeChange={handleModeChange} />
           </div>
 
-          <div className="mt-6 space-y-2">
+          <div className="mt-3 space-y-2">
             <TrustBadge />
             <SourcesLine />
           </div>
