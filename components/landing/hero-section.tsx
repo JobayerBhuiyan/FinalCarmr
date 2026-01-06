@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { VinInput } from "@/components/vin-input"
 import { TrustBadge, SourcesLine } from "@/components/trust-badge"
 import { useI18n } from "@/lib/i18n/context"
@@ -20,7 +21,18 @@ export function HeroSection() {
           <div className="flex flex-col items-center justify-center">
             <p className="text-sm font-medium uppercase tracking-wider text-primary">{t.proVehicleHistory}</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-[1.1] sm:text-4xl lg:text-5xl mx-auto [text-wrap:balance] min-h-[2.5em] flex items-center justify-center">
-              {mode === "vin" ? t.knowBeforeYouBuy : t.knowBeforeYouBuyPlate}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={mode}
+                  initial={{ opacity: 0, y: 5, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -5, filter: "blur(8px)" }}
+                  transition={{ duration: 0.02, ease: "easeOut" }}
+                  className="block"
+                >
+                  {mode === "vin" ? t.knowBeforeYouBuy : t.knowBeforeYouBuyPlate}
+                </motion.span>
+              </AnimatePresence>
             </h1>
             <p className="mt-2 text-lg text-foreground/80 text-balance sm:text-xl font-medium">{t.heroSubtitle}</p>
           </div>
